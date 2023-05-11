@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class MCourier extends Model
+class TOrder extends Model
 {
     use HasFactory;
     use CreatedUpdatedBy;
 
-    protected $table = "m_courier";
-    protected $primaryKey = 'id_courier';
+    protected $table = "t_order";
+    protected $primaryKey = 'id_order';
     const CREATED_AT = 'created_date';
     const UPDATED_AT = 'updated_date';
     protected $fillable = [

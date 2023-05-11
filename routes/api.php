@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CAAuth;
+use App\Http\Controllers\Api\CADelivery;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +27,9 @@ Route::group(['middleware' => 'myauth'], function () {
     Route::post('/ubah-password', [CAAuth::class, 'ubah_password']);
     Route::post('/auth-signout', [CAAuth::class, 'logout']);
     Route::get('/detail-profil', [CAAuth::class, 'detail_profil']);    
+    Route::get('/get-all-delivery', [CADelivery::class, 'get_all_delivery']);    
+    Route::post('/post-pickup', [CADelivery::class, 'post_pickup']);
+    Route::get('/get-all-pickup', [CADelivery::class, 'get_all_pickup']);
+    Route::post('/post-done-pickup', [CADelivery::class, 'post_done_pickup']);
+    Route::get('/get-delivery-fee-history', [CADelivery::class, 'get_delivery_fee_history']);
 });
