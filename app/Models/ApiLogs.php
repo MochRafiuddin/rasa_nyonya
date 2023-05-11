@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ApiLogs extends Model
+{
+    use HasFactory;
+    protected $table = "api_logs";
+    protected $primaryKey = 'id';
+    const CREATED_AT = 'created_date';
+    const UPDATED_AT = 'updated_date';
+    protected $fillable = [
+        'uri', 'method','param','api_key','response_code','response_data'
+    ];
+
+}

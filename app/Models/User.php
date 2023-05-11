@@ -16,8 +16,13 @@ class User extends Authenticatable
      *
      * @var array
      */
+    const CREATED_AT = 'created_date';
+    const UPDATED_AT = 'updated_date';
+    protected $table = "m_user";
+    protected $primaryKey = 'id_user';
+    protected $rememberTokenName = false;
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'password',
     ];
 
     /**
@@ -26,15 +31,16 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public static function withDeleted()
+    {
+        return self::where('deleted',1);
+    }
+    public static function updateDeleted($id)
+    {
+        return self::find($id)->update(['deleted'=>0]);
+    }
+
 }
