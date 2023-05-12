@@ -17,6 +17,8 @@ class CADelivery extends Controller
         $token = MApiKey::where('token',$request->header('auth-key'))->first();
         $user = User::where('id_user',$token->id_user)->first();                    
         $id_wilayah = $request->id_wilayah;
+        $limit = 10;
+        $page = ($request->page-1)*$limit;
         // dd($id_wilayah);
         
         $data = TOrder::from('t_order as a')
@@ -32,18 +34,45 @@ class CADelivery extends Controller
         ->where('b.deleted', 1)
         ->where('c.deleted', 1)
         ->where('d.deleted', 1)
-        ->where('e.deleted', 1);
+        ->where('e.deleted', 1)
+        ->limit($limit)
+        ->offset($page);
         
-        if ($id_wilayah != null) {
+        $get_total_all_data = TOrder::from('t_order as a')
+        ->selectRaw('a.id_order')
+        ->leftJoin('m_customer as b','a.id_customer','b.id_customer')
+        ->leftJoin('m_area as c','a.id_area','c.id_area')
+        ->leftJoin('m_wilayah as d','a.id_wilayah','d.id_wilayah')
+        ->leftJoin('m_status as e','a.id_status','e.id_status')
+        ->where('a.id_status', 1)
+        ->whereDate('a.tanggal_pemesanan', date('Y-m-d'))
+        ->where('a.deleted', 1)
+        ->where('b.deleted', 1)
+        ->where('c.deleted', 1)
+        ->where('d.deleted', 1)
+        ->where('e.deleted', 1);
+
+        if($id_wilayah != null) {
             $data= $data->where('a.id_wilayah', $id_wilayah);
+            $get_total_all_data= $get_total_all_data->where('a.id_wilayah', $id_wilayah);
         }
 
         $data= $data->get();        
+        $get_total_all_data = $get_total_all_data->count();        
+        $total_page = 0;
+        $hasil_bagi = $get_total_all_data / $limit;
+        if(fmod($get_total_all_data, $limit) == 0){
+            $total_page = $hasil_bagi;
+        }else{
+            $total_page = floor($hasil_bagi)+1;
+        }
         return response()->json([
             'success' => true,
             'message' => 'Success',
             'code' => 1,
-            'data' => $data
+            'data' => $data,
+            'total_data' => count($data),                
+            'total_page' => $total_page
         ], 200);
     }
 
@@ -66,6 +95,8 @@ class CADelivery extends Controller
         $token = MApiKey::where('token',$request->header('auth-key'))->first();
         $user = User::where('id_user',$token->id_user)->first();                    
         $id_wilayah = $request->id_wilayah;
+        $limit = 10;
+        $page = ($request->page-1)*$limit;
         // dd($user->id_ref);
         
         $data = TOrder::from('t_order as a')
@@ -83,18 +114,48 @@ class CADelivery extends Controller
         ->where('c.deleted', 1)
         ->where('d.deleted', 1)
         ->where('e.deleted', 1)
+        ->where('f.deleted', 1)
+        ->limit($limit)
+        ->offset($page);
+
+        $get_total_all_data = TOrder::from('t_order as a')
+        ->selectRaw('a.id_order')
+        ->leftJoin('m_customer as b','a.id_customer','b.id_customer')
+        ->leftJoin('m_area as c','a.id_area','c.id_area')
+        ->leftJoin('m_wilayah as d','a.id_wilayah','d.id_wilayah')
+        ->leftJoin('m_status as e','a.id_status','e.id_status')
+        ->leftJoin('m_courier as f','a.id_courier','f.id_courier')        
+        ->where('a.id_status', 2)
+        ->where('a.id_courier', $user->id_ref)
+        ->whereDate('a.tanggal_pemesanan', date('Y-m-d'))
+        ->where('a.deleted', 1)
+        ->where('b.deleted', 1)
+        ->where('c.deleted', 1)
+        ->where('d.deleted', 1)
+        ->where('e.deleted', 1)
         ->where('f.deleted', 1);
 
         if ($id_wilayah != null) {
             $data= $data->where('a.id_wilayah', $id_wilayah);
+            $get_total_all_data= $get_total_all_data->where('a.id_wilayah', $id_wilayah);
         }
 
         $data= $data->get();        
+        $get_total_all_data = $get_total_all_data->count();        
+        $total_page = 0;
+        $hasil_bagi = $get_total_all_data / $limit;
+        if(fmod($get_total_all_data, $limit) == 0){
+            $total_page = $hasil_bagi;
+        }else{
+            $total_page = floor($hasil_bagi)+1;
+        }
         return response()->json([
             'success' => true,
             'message' => 'Success',
             'code' => 1,
-            'data' => $data
+            'data' => $data,
+            'total_data' => count($data),                
+            'total_page' => $total_page
         ], 200);
     }
 
@@ -155,6 +216,8 @@ class CADelivery extends Controller
         $user = User::where('id_user',$token->id_user)->first();                    
         $tanggal_awal = $request->tanggal_awal;
         $tanggal_akhir = $request->tanggal_akhir;
+        $limit = 10;
+        $page = ($request->page-1)*$limit;
         // dd($user->id_ref);
         
         $data = TOrder::from('t_order as a')
@@ -172,8 +235,36 @@ class CADelivery extends Controller
         ->where('c.deleted', 1)
         ->where('d.deleted', 1)
         ->where('e.deleted', 1)
+        ->where('f.deleted', 1)
+        ->limit($limit)
+        ->offset($page);
+
+        $get_total_all_data = TOrder::from('t_order as a')
+        ->selectRaw('a.id_order')
+        ->leftJoin('m_customer as b','a.id_customer','b.id_customer')
+        ->leftJoin('m_area as c','a.id_area','c.id_area')
+        ->leftJoin('m_wilayah as d','a.id_wilayah','d.id_wilayah')
+        ->leftJoin('m_status as e','a.id_status','e.id_status')
+        ->leftJoin('m_courier as f','a.id_courier','f.id_courier')        
+        ->where('a.id_status', 4)
+        ->where('a.id_courier', $user->id_ref)
+        ->whereBetween(DB::raw('DATE(tanggal_pemesanan)'), [$tanggal_awal,$tanggal_akhir])
+        ->where('a.deleted', 1)
+        ->where('b.deleted', 1)
+        ->where('c.deleted', 1)
+        ->where('d.deleted', 1)
+        ->where('e.deleted', 1)
         ->where('f.deleted', 1);
-        $data= $data->get();    
+
+        $data= $data->get();        
+        $get_total_all_data = $get_total_all_data->count();        
+        $total_page = 0;
+        $hasil_bagi = $get_total_all_data / $limit;
+        if(fmod($get_total_all_data, $limit) == 0){
+            $total_page = $hasil_bagi;
+        }else{
+            $total_page = floor($hasil_bagi)+1;
+        } 
     
         $total_fee = TOrder::where('deleted', 1)
             ->where('id_status', 4)
@@ -186,6 +277,8 @@ class CADelivery extends Controller
             'message' => 'Success',
             'code' => 1,
             'data' => $data,
+            'total_data' => count($data),                
+            'total_page' => $total_page,
             'total_fee' => $total_fee
         ], 200);
     }
