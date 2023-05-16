@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\MApiKey;
+use App\Models\TOrder;
 use App\Traits\Helper;
 use Auth;
 use Hash;
-
 class CAAuth extends Controller
 {
     use Helper;
@@ -59,8 +59,10 @@ class CAAuth extends Controller
     {        
         $token = MApiKey::where('token',$request->header('auth-key'))->first();        
         
-        $user= User::select('m_user.*','m_courier.id_courier','m_courier.nama','m_courier.alamat','m_courier.no_hp')
+        $user= User::select('m_user.*','m_courier.id_courier','m_courier.nama','m_courier.alamat','m_courier.no_hp','m_courier.id_area','m_courier.id_wilayah','m_area.nama_area','m_wilayah.nama_wilayah')
                 ->join('m_courier','m_courier.id_courier','m_user.id_ref')
+				->leftJoin('m_area','m_courier.id_area','m_area.id_area')
+				->leftJoin('m_wilayah','m_courier.id_wilayah','m_wilayah.id_wilayah')
                 ->where('m_user.id_user',auth::user()->id_user)
                 ->where('m_user.tipe_user',2)
                 ->get()->toArray();
@@ -102,18 +104,27 @@ class CAAuth extends Controller
             $token->token = $key;
             $token->save();            
 
-            $get_user= User::select('m_user.*','m_courier.id_courier','m_courier.nama','m_courier.alamat','m_courier.no_hp')
+            $get_user= User::select('m_user.*','m_courier.id_courier','m_courier.nama','m_courier.alamat','m_courier.no_hp','m_courier.id_area','m_courier.id_wilayah','m_area.nama_area','m_wilayah.nama_wilayah')
                 ->join('m_courier','m_courier.id_courier','m_user.id_ref')
+				->leftJoin('m_area','m_courier.id_area','m_area.id_area')
+				->leftJoin('m_wilayah','m_courier.id_wilayah','m_wilayah.id_wilayah')
                 ->where('m_user.id_user',auth::user()->id_user)
                 ->where('m_user.tipe_user',2)
                 ->get();
-        
+			
+			$total_fee = TOrder::where('deleted', 1)
+            ->where('id_status', 4)
+            ->where('id_courier', auth::user()->id_user)
+            ->whereDate('tanggal_pemesanan', date('Y-m-d'))
+            ->sum('fee_courier');	
+			
         return response()->json([
             'success' => true,
             'message' => 'Login Success',
             'key' => $key,
             'code' => 1,
             'user_data' => $get_user,
+			'total_fee_today' => $total_fee
         ]);
     }
 }

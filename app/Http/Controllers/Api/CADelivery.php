@@ -221,7 +221,7 @@ class CADelivery extends Controller
         // dd($user->id_ref);
         
         $data = TOrder::from('t_order as a')
-        ->selectRaw('a.id_order, a.id_customer, a.alamat, a.id_area, a.id_wilayah, IF(a.jenis_pengantaran = 1, "Makan Siang", "Makan Malam") as jenis_pengantaran_new, a.jenis_paket, a.keterangan, a.tanggal_pemesanan, a.id_status,b.nama as nama_customer, b.no_hp as no_telfon_customer, c.nama_area as nama_area, d.nama_wilayah as nama_wilayah, e.nama_status, f.nama as nama_courier')
+        ->selectRaw('a.id_order, a.id_customer, a.alamat, a.id_area, a.id_wilayah, IF(a.jenis_pengantaran = 1, "Makan Siang", "Makan Malam") as jenis_pengantaran_new, a.jenis_paket, a.keterangan, a.tanggal_pemesanan, a.id_status, a.fee_courier,b.nama as nama_customer, b.no_hp as no_telfon_customer, c.nama_area as nama_area, d.nama_wilayah as nama_wilayah, e.nama_status, f.nama as nama_courier')
         ->leftJoin('m_customer as b','a.id_customer','b.id_customer')
         ->leftJoin('m_area as c','a.id_area','c.id_area')
         ->leftJoin('m_wilayah as d','a.id_wilayah','d.id_wilayah')
