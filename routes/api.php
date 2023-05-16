@@ -32,4 +32,5 @@ Route::group(['middleware' => 'myauth'], function () {
     Route::get('/get-all-pickup', [CADelivery::class, 'get_all_pickup']);
     Route::post('/post-done-pickup', [CADelivery::class, 'post_done_pickup']);
     Route::get('/get-delivery-fee-history', [CADelivery::class, 'get_delivery_fee_history']);
+    Route::get('/get-total-fee-today', [CADelivery::class, 'get_total_fee_today']);
 });

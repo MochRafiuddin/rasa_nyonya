@@ -297,5 +297,22 @@ class CADelivery extends Controller
         return $destination;
     }
 
-    
+    public function get_total_fee_today(Request $request)
+    {        
+        $token = MApiKey::where('token',$request->header('auth-key'))->first();
+        $user = User::where('id_user',$token->id_user)->first();                          
+        
+        $total_fee = TOrder::where('deleted', 1)
+            ->where('id_status', 4)
+            ->where('id_courier', $user->id_ref)
+            ->whereDate('tanggal_pemesanan', date('Y-m-d'))
+            ->sum('fee_courier');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Success',
+            'code' => 1,
+            'total_fee' => $total_fee
+        ]);
+    }
 }
