@@ -95,6 +95,7 @@ class CADelivery extends Controller
         $token = MApiKey::where('token',$request->header('auth-key'))->first();
         $user = User::where('id_user',$token->id_user)->first();                    
         $id_wilayah = $request->id_wilayah;
+        $search = $request->search;
         $limit = 10;
         $page = ($request->page-1)*$limit;
         // dd($user->id_ref);
@@ -134,6 +135,19 @@ class CADelivery extends Controller
         ->where('d.deleted', 1)
         ->where('e.deleted', 1)
         ->where('f.deleted', 1);
+
+        if ($search != null) {
+            $data = $data->where(function ($query) use ($search) {
+                $query->where('b.nama', 'like', '%'.$search.'%')
+                      ->orwhere('a.alamat', 'like', '%'.$search.'%')
+                      ->orwhere('a.id_order', 'like', '%'.$search.'%');
+            });
+            $get_total_all_data = $get_total_all_data->where(function ($query) use ($search) {
+                $query->where('b.nama', 'like', '%'.$search.'%')
+                      ->orwhere('a.alamat', 'like', '%'.$search.'%')
+                      ->orwhere('a.id_order', 'like', '%'.$search.'%');
+            });
+        }
 
         if ($id_wilayah != null) {
             $data= $data->where('a.id_wilayah', $id_wilayah);
