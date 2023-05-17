@@ -115,9 +115,12 @@ class CADelivery extends Controller
         ->where('c.deleted', 1)
         ->where('d.deleted', 1)
         ->where('e.deleted', 1)
-        ->where('f.deleted', 1)
-        ->limit($limit)
-        ->offset($page);
+        ->where('f.deleted', 1);
+
+        if ($request->page != 0) {
+            $data = $data->limit($limit)
+            ->offset($page);
+        }
 
         $get_total_all_data = TOrder::from('t_order as a')
         ->selectRaw('a.id_order')
