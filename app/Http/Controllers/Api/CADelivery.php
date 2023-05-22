@@ -81,7 +81,15 @@ class CADelivery extends Controller
         $token = MApiKey::where('token',$request->header('auth-key'))->first();
         $user = User::where('id_user',$token->id_user)->first();                    
         $id_order = explode(",",$request->id_order);
-        // dd($id_wilayah);
+        $cek = TOrder::whereIn('id_order',$id_order)->where('id_status','!=',1)->get()->count();
+        // dd($cek);
+        if ($cek > 0) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pickup gagal diproses',
+                'code' => 2,
+            ], 200);
+        }
         TOrder::whereIn('id_order',$id_order)->update(['id_courier' => $user->id_ref,'id_status' => 2]);
         return response()->json([
             'success' => true,
