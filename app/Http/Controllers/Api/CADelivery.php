@@ -85,7 +85,7 @@ class CADelivery extends Controller
         // dd($cek);
         if ($cek > 0) {
             return response()->json([
-                'success' => true,
+                'success' => false,
                 'message' => 'Pickup gagal diproses',
                 'code' => 2,
             ], 200);
