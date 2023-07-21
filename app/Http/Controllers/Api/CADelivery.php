@@ -230,7 +230,7 @@ class CADelivery extends Controller
         ]);
         return response()->json([
             'success' => true,
-            'message' => 'Pickup berhasil',
+            'message' => 'Pengantaran Selesai',
             'code' => 1,
         ], 200);
     }
